@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Athlete Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface2: #1a1010;
+      --border: #2a1515;
+      --border-focus: #e02020;
+      --accent: #e02020;
+      --accent2: #ff6030;
+      --text: #f5e8e8;
+      --muted: #9a7a7a;
+      --success: #2df2a0;
+      --error: #ff4444;
+      --radius: 14px;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    /* Ambient background orbs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(220,30,30,0.18) 0%, transparent 70%);
+      top: -100px; left: -100px;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,80,20,0.12) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(220,30,30,0.12);
+      border: 1px solid rgba(220,30,30,0.35);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .badge span { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 6vw, 38px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px 32px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 40px 80px rgba(0,0,0,0.4),
+        0 8px 20px rgba(0,0,0,0.3);
+      animation: slideUp 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Form groups */
+    .field {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      display: flex;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    input, select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 14px 14px 42px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237b7fa8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    select option { background: #1a0e0e; }
+    input::placeholder { color: #4a2a2a; }
+    input:focus, select:focus {
+      border-color: var(--border-focus);
+      background: #180f0f;
+      box-shadow: 0 0 0 4px rgba(220,30,30,0.14);
+    }
+    input:focus + .icon, select:focus + .icon { color: var(--accent); } /* doesn't work with current DOM order but kept for clarity */
+    .input-wrap:focus-within .icon { color: var(--accent); }
+
+    .field-error {
+      display: none;
+      margin-top: 6px;
+      font-size: 12.5px;
+      color: var(--error);
+      align-items: center;
+      gap: 5px;
+    }
+    .field-error.visible { display: flex; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+    input.invalid, select.invalid { border-color: var(--error); box-shadow: 0 0 0 4px rgba(255,40,40,0.12); }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+
+    /* Submit button */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #fff;
+      background: linear-gradient(135deg, #c01010 0%, #ff4020 60%, #8b0000 100%);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 24px rgba(200,20,20,0.45);
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 34px rgba(220,30,30,0.55); }
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .btn:hover:not(:disabled)::after { opacity: 1; }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .spinner {
+      display: none;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn.loading .spinner { display: block; }
+    .btn.loading .btn-text { display: none; }
+
+    /* Toast / status messages */
+    .toast {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: fadeIn 0.3s ease;
+    }
+    .toast.visible { display: flex; }
+    .toast.success {
+      background: rgba(45,242,160,0.1);
+      border: 1px solid rgba(45,242,160,0.3);
+      color: var(--success);
+    }
+    .toast.error {
+      background: rgba(255,94,125,0.1);
+      border: 1px solid rgba(255,94,125,0.3);
+      color: var(--error);
+    }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+
+    /* Footer note */
+    .footer-note {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #4a2a2a;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="badge"><span></span> Open Registration</div>
+      <h1>Join the <em>Arena</em></h1>
+      <p class="subtitle">Register your profile and connect with athletes worldwide.</p>
+    </div>
+
+    <div class="card">
+      <form id="registrationForm" novalidate>
+
+        <!-- Name -->
+        <div class="field" id="field-name">
+          <label for="name">Full Name</label>
+          <div class="input-wrap">
+            <input type="text" id="name" name="name" placeholder="Alex Johnson" autocomplete="name"/>
+            <span class="icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+          </div>
+          <div class="field-error" id="error-name">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Name is required.</span>
+          </div>
+        </div>
+
+        <!-- Sport -->
+        <div class="field" id="field-sport">
+          <label for="sport">Your Sport</label>
+          <div class="input-wrap">
+            <select id="sport" name="sport">
+              <option value="" disabled selected>Select a sport…</option>
+              <option value="basketball">🏀 Basketball</option>
+              <option value="football">⚽ Football / Soccer</option>
+              <option value="tennis">🎾 Tennis</option>
+              <option value="swimming">🏊 Swimming</option>
+              <option value="cycling">🚴 Cycling</option>
+              <option value="athletics">🏃 Athletics / Track</option>
+              <option value="boxing">🥊 Boxing</option>
+              <option value="volleyball">🏐 Volleyball</option>
+              <option value="cricket">🏏 Cricket</option>
+            </select>
+            <span class="icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+            </span>
+          </div>
+          <div class="field-error" id="error-sport">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Please select a sport.</span>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field" id="field-email">
+          <label for="email">Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="email" name="email" placeholder="alex@example.com" autocomplete="email"/>
+            <span class="icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+          </div>
+          <div class="field-error" id="error-email">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="error-email-text">Email is required.</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          <div class="btn-inner">
+            <div class="spinner"></div>
+            <span class="btn-text">Register Now →</span>
+          </div>
+        </button>
+
+        <div class="toast" id="toast">
+          <span class="toast-icon" id="toast-icon"></span>
+          <span id="toast-msg"></span>
+        </div>
+      </form>
+    </div>
+
+    <p class="footer-note">Your data is secure and will never be shared.</p>
+  </div>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+    const nameInput = document.getElementById('name');
+    const sportInput = document.getElementById('sport');
+    const emailInput = document.getElementById('email');
+    const submitBtn = document.getElementById('submitBtn');
+    const toast = document.getElementById('toast');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function setError(fieldId, errorId, msg) {
+      const field = document.getElementById('field-' + fieldId);
+      const input = document.getElementById(fieldId);
+      const errEl = document.getElementById('error-' + fieldId);
+      input.classList.add('invalid');
+      if (msg) {
+        const span = errEl.querySelector('span');
+        if (span) span.textContent = msg;
+      }
+      errEl.classList.add('visible');
+    }
+
+    function clearError(fieldId) {
+      document.getElementById(fieldId).classList.remove('invalid');
+      document.getElementById('error-' + fieldId).classList.remove('visible');
+    }
+
+    function validate() {
+      let valid = true;
+      clearError('name'); clearError('sport'); clearError('email');
+
+      if (!nameInput.value.trim()) { setError('name'); valid = false; }
+      if (!sportInput.value) { setError('sport'); valid = false; }
+      if (!emailInput.value.trim()) {
+        setError('email', 'error-email', 'Email is required.');
+        valid = false;
+      } else if (!emailRegex.test(emailInput.value.trim())) {
+        setError('email', 'error-email', 'Enter a valid email address.');
+        document.getElementById('error-email-text').textContent = 'Enter a valid email address.';
+        valid = false;
+      }
+      return valid;
+    }
+
+    function showToast(type, msg) {
+      toast.className = 'toast visible ' + type;
+      document.getElementById('toast-icon').textContent = type === 'success' ? '✓' : '✕';
+      document.getElementById('toast-msg').textContent = msg;
+    }
+
+    function hideToast() {
+      toast.className = 'toast';
+    }
+
+    // Live validation on blur
+    nameInput.addEventListener('blur', () => { if (!nameInput.value.trim()) setError('name'); else clearError('name'); });
+    sportInput.addEventListener('change', () => { if (sportInput.value) clearError('sport'); else setError('sport'); });
+    emailInput.addEventListener('blur', () => {
+      if (!emailInput.value.trim()) {
+        document.getElementById('error-email-text').textContent = 'Email is required.';
+        setError('email');
+      } else if (!emailRegex.test(emailInput.value.trim())) {
+        document.getElementById('error-email-text').textContent = 'Enter a valid email address.';
+        setError('email');
+      } else {
+        clearError('email');
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideToast();
+      if (!validate()) return;
+
+      const payload = {
+        name: nameInput.value.trim(),
+        sport: sportInput.value,
+        email: emailInput.value.trim()
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+
+      try {
+        const res = await fetch('/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || `Server error (${res.status})`);
+        }
+
+        showToast('success', 'Registration successful! Welcome to the arena.');
+        form.reset();
+      } catch (err) {
+        showToast('error', err.message || 'Something went wrong. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+      }
+    });
+  </script>
+</body>
+</html>
