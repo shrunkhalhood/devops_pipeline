@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "shrunkhood/mini full-stack-demo"
+        DOCKER_IMAGE = "shrunkhood/mini-full-stack-demo"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        CONTAINER_NAME ="mini full-stack"
+        CONTAINER_NAME ="mini-full-stack"
     }
 
     stages {
