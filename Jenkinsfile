@@ -61,7 +61,7 @@ pipeline {
                     docker pull $DOCKER_IMAGE:$IMAGE_TAG
 
                     echo "Running new container..."
-                    docker run -d -p 8081:8080 --name $CONTAINER_NAME $DOCKER_IMAGE:$IMAGE_TAG
+                    docker run -d -e DB_PASS=$DB_PASS -p 8081:8080 --name $CONTAINER_NAME $DOCKER_IMAGE:$IMAGE_TAG
 
                     echo "Listing running containers..."
                     docker ps
