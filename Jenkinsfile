@@ -9,8 +9,6 @@ pipeline {
         DOCKER_IMAGE = "shrunkhood/mini-full-stack-demo"
         IMAGE_TAG = "${BUILD_NUMBER}"
         CONTAINER_NAME ="mini-full-stack"
-    }
-    environment {
         DB_PASS = credentials('RDS_DB_PASSWORD')
     }
 
