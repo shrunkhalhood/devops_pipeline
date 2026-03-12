@@ -17,13 +17,12 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 checkout scm
-                sh 'exit 1'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'
+                sh 'mvn clean pack
             }
         }
 
