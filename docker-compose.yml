@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8
@@ -10,10 +8,8 @@ services:
       MYSQL_DATABASE: playerdb
     ports:
       - "3306:3306"
-      volumes:
-    - mysql_data:/var/lib/mysql
-
-
+    volumes:
+      - mysql_data:/var/lib/mysql
   app:
     image: shrunkhood/mini-full-stack-demo:latest
     container_name: spring-app
@@ -26,3 +22,6 @@ services:
       DB_URL: jdbc:mysql://db:3306/playerdb
       DB_USER: root
       DB_PASS: root
+
+volumes:
+  mysql_data:
