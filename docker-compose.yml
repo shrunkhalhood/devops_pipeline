@@ -10,6 +10,9 @@ services:
       MYSQL_DATABASE: playerdb
     ports:
       - "3306:3306"
+      volumes:
+    - mysql_data:/var/lib/mysql
+
 
   app:
     image: shrunkhood/mini-full-stack-demo:latest
