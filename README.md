@@ -15,7 +15,7 @@ This meant:
 - ❌ No local testing possible without AWS credentials
 
 ### ✅ Solution
-We created this branch to make the app **fully portable and Docker-based**:
+ I created this branch to make the app **fully portable and Docker-based**:
 - No AWS dependency
 - Runs entirely on your local machine
 - Anyone can clone and run it in minutes
@@ -32,7 +32,6 @@ We created this branch to make the app **fully portable and Docker-based**:
 Make sure you have these installed on your machine:
 
 - [Docker](https://www.docker.com/products/docker-desktop)
-- [Docker Compose](https://docs.docker.com/compose/)
 - [Git](https://git-scm.com/)
 
 ---
