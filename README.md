@@ -47,7 +47,7 @@ AI-Powered CI/CD Failure Analyzer is a fully automated pipeline with an intellig
 
 ## 🎥 Live Demo
 
-> 📹 **Demo Video**: [Watch on YouTube](#) ← add your link here
+> 📹 **Demo Video**: [Watch on YouTube](#) 
 
 ### Slack Notification Preview:
 
