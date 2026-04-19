@@ -60,6 +60,7 @@ docker pull shrunkhood/mini-full-stack-demo:latest
 docker-compose up -d
 ```
 👉 This will start both **MySQL** and the **Spring Boot app** automatically.
+You have to just wait for **3-5 minutes**
 
 ### Step 5 — Open in Browser
 ```
